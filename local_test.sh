@@ -1,0 +1,1 @@
+docker run --rm -i -t -v /home/matthias/Code/habitat-lab/data:/habitat-lab/data --runtime nvidia -e HYDRA_FULL_ERROR=1 gitlab.ilabt.imec.be:4567/mhutsebautbuysse/eai:habitat_beacon conda run -n habitat python3 /habitat-lab/habitat-baselines/habitat_baselines/run.py --config-name=pointnav/ppo_pointnav_beacon.yaml habitat_baselines.num_environments=2
