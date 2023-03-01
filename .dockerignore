@@ -1,0 +1,11 @@
+data
+.git
+outputs
+res
+video_dir
+examples
+.github
+.circleci
+.idea
+*.log
+.eggs

@@ -42,12 +42,26 @@ RUN conda create -n habitat python=3.7 cmake=3.14.0
 
 # Setup habitat-sim
 RUN git clone --branch stable https://github.com/facebookresearch/habitat-sim.git
-RUN /bin/bash -c ". activate habitat; cd habitat-sim; pip install -r requirements.txt; python setup.py install --headless"
+RUN /bin/bash -c ". activate habitat; cd habitat-sim; pip install -r requirements.txt; python setup.py install --headless --with-cuda"
 
 # Install challenge specific habitat-lab
-RUN git clone --branch stable https://github.com/facebookresearch/habitat-lab.git
-RUN /bin/bash -c ". activate habitat; cd habitat-lab; pip install -e habitat-lab/"
+COPY ./habitat-lab/requirements.txt /habitat-lab/habitat-lab/requirements.txt
+RUN /bin/bash -c ". activate habitat; cd /habitat-lab/habitat-lab; pip install -r requirements.txt"
+
+RUN /bin/bash -c ". activate habitat; cd /habitat-lab/habitat-lab; pip install moviepy>=1.0.1 torch>=1.3.1 protobuf==3.20.1 tensorboard==2.8.0"
+
+RUN rm -r -f /cmake-3.14.0-Linux-x86_64.sh
+
+COPY ./README.md /habitat-lab/README.md
+COPY ./habitat-lab/ /habitat-lab/habitat-lab
+COPY ./habitat-baselines /habitat-lab/habitat-baselines
+
+RUN /bin/bash -c ". activate habitat; cd /habitat-lab/habitat-lab; pip install -e ."
+
+RUN /bin/bash -c ". activate habitat; cd /habitat-lab/habitat-baselines; pip install -e ."
 
 # Silence habitat-sim logs
-ENV GLOG_minloglevel=2
-ENV MAGNUM_LOG="quiet"
+#ENV GLOG_minloglevel=2
+#ENV MAGNUM_LOG="quiet"
+
+WORKDIR /habitat-lab

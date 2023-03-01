@@ -1,0 +1,11 @@
+# @package habitat.dataset
+
+defaults:
+  - /habitat/dataset: dataset_config_schema
+  - _self_
+
+type: PointNav-v1
+split: train
+data_path: data/datasets/pointnav/beacon/v1/{split}/{split}.json.gz
+content_scenes:
+  - 'beacon-6'
