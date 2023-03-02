@@ -1,7 +1,7 @@
 # @package _global_
 
 defaults:
-  - /benchmark/nav/pointnav: pointnav_gibson
+  - /benchmark/nav/pointnav: pointnav_habitat_beacon
   - /habitat_baselines: habitat_baselines_rl_config_base
   - _self_
 
@@ -22,6 +22,10 @@ habitat_baselines:
   # Force PyTorch to be single threaded as
   # this improves performance considerably
   force_torch_single_threaded: True
+  load_resume_state_config: False
+
+  eval:
+    video_option: [ "disk"]
 
   rl:
     policy:
@@ -70,6 +74,6 @@ habitat_baselines:
       reset_critic: True
 
       # Model parameters
-      backbone: resnet50
-      rnn_type: LSTM
-      num_recurrent_layers: 2
+      backbone: resnet18
+      rnn_type: GRU
+      num_recurrent_layers: 1

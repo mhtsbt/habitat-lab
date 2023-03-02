@@ -910,6 +910,9 @@ class PPOTrainer(BaseRLTrainer):
         else:
             ckpt_dict = {"config": None}
 
+        if "config" not in ckpt_dict:
+            ckpt_dict['config'] = {}
+
         config = self._get_resume_state_config_or_new_config(
             ckpt_dict["config"]
         )

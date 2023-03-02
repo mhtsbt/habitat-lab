@@ -9,7 +9,7 @@ defaults:
   - _self_
 
 habitat_baselines:
-  trainer_name: "ppo"
+  trainer_name: "ddppo"
   torch_gpu_id: 0
   tensorboard_dir: "tb"
   video_dir: "video_dir"
@@ -26,6 +26,7 @@ habitat_baselines:
   # this improves performance considerably
   force_torch_single_threaded: True
   load_resume_state_config: False
+
 
   eval:
     video_option: [ "disk", "tensorboard" ]
@@ -52,3 +53,24 @@ habitat_baselines:
       use_linear_clip_decay: True
       use_linear_lr_decay: True
       reward_window_size: 50
+
+    ddppo:
+      sync_frac: 0.6
+      # The PyTorch distributed backend to use
+      distrib_backend: NCCL
+      # Visual encoder backbone
+      pretrained_weights: data/ddppo-models/gibson-2plus-resnet50.pth
+      # Initialize with pretrained weights
+      pretrained: False
+      # Initialize just the visual encoder backbone with pretrained weights
+      pretrained_encoder: False
+      # Whether the visual encoder backbone will be trained.
+      train_encoder: True
+      # Whether to reset the critic linear layer
+      reset_critic: True
+
+      # Model parameters
+      backbone: resnet50
+      rnn_type: LSTM
+      num_recurrent_layers: 2
+
