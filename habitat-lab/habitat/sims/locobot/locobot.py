@@ -150,23 +150,28 @@ class LocobotDepthSensor(DepthSensor, HabitatSimSensor):
     max_depth_value: float
 
     def __init__(self, config: DictConfig) -> None:
-        if config.normalize_depth:
-            self.min_depth_value = 0
-            self.max_depth_value = 1
-        else:
-            self.min_depth_value = config.min_depth
-            self.max_depth_value = config.max_depth
+        self.min_depth_value = config.min_depth
+        self.max_depth_value = config.max_depth
         self.normalize_depth = config.normalize_depth
+        if self.normalize_depth:
+            self._obs_shape = spaces.Box(
+                low=0,
+                high=1,
+                shape=(config.height, config.width, 1),
+                dtype=np.float32,
+            )
+        else:
+            self._obs_shape = spaces.Box(
+                low=self.min_depth_value,
+                high=self.max_depth_value,
+                shape=(config.height, config.width, 1),
+                dtype=np.float32,
+            )
 
         super().__init__(config=config)
 
     def _get_observation_space(self, *args: Any, **kwargs: Any) -> Box:
-        return spaces.Box(
-            low=self.min_depth_value,
-            high=self.max_depth_value,
-            shape=(self.config.height, self.config.width, 1),
-            dtype=np.float32,
-        )
+        return self._obs_shape
 
     def get_observation(
         self, sim_obs: Dict[str, Union[np.ndarray, bool, "Tensor"]]
@@ -180,7 +185,8 @@ class LocobotDepthSensor(DepthSensor, HabitatSimSensor):
                 obs, axis=2
             )  # make depth observation a 3D array
         else:
-            obs = obs.clamp(self.min_depth_value, self.max_depth_value)  # type: ignore[attr-defined, unreachable]
+            obs = obs.clamp(self.min_depth_value,
+                            self.max_depth_value)  # type: ignore[attr-defined, unreachable]
 
             obs = obs.unsqueeze(-1)  # type: ignore[attr-defined]
 
@@ -274,7 +280,7 @@ class LocobotSim(Simulator):
 
     def __init__(self, config: DictConfig) -> None:
         self.habitat_config = config
-        self.client = LocobotClient(locobot_url="http://10.0.3.47:8080")
+        self.client = LocobotClient(locobot_url="http://10.0.3.49:8080")
         sim_sensors = []
         for agent_config in self.habitat_config.agents.values():
             for sensor_cfg in agent_config.sim_sensors.values():
@@ -412,8 +418,9 @@ class LocobotSim(Simulator):
     def seed(self, seed: int) -> None:
         pass
 
+
     def get_robot_obs(self):
-        return {"depth": np.random.random((256, 256)).astype(np.float32)}
+        return {"depth": self.client.get_depth()}#np.random.random((256, 256)).astype(np.float32)}
 
     def reset(self) -> Observations:
         sim_obs = self.get_robot_obs()
@@ -426,7 +433,7 @@ class LocobotSim(Simulator):
         # turn_left stop move_forward
 
         print(f"DO ACTION {action_name} {amount}")
-        self.client.move(action_name=action_name, amount=amount)
+        #self.client.move(action_name=action_name, amount=amount)
 
         sim_obs = self.get_robot_obs()
         observations = self._sensor_suite.get_observations(sim_obs)
