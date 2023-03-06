@@ -337,6 +337,9 @@ class LocobotSim(Simulator):
                 "robot_type",
                 "joint_start_noise",
                 "ik_arm_urdf",
+                "articulated_agent_urdf",
+                "articulated_agent_type",
+                "grasp_managers",
             },
         )
 
@@ -405,6 +408,9 @@ class LocobotSim(Simulator):
 
         return is_updated
 
+    def seed(self, seed: int) -> None:
+        pass
+
     def get_robot_obs(self):
         return {"depth": np.random.random((256, 256)).astype(np.float32)}
 
@@ -413,6 +419,10 @@ class LocobotSim(Simulator):
         return self._sensor_suite.get_observations(sim_obs)
 
     def step(self, action: Union[str, np.ndarray, int]) -> Observations:
+
+
+        print(f"DO ACTION {action}")
+
         sim_obs = self.get_robot_obs()
         observations = self._sensor_suite.get_observations(sim_obs)
         return observations
