@@ -22,6 +22,7 @@ import numpy as np
 from gym import spaces
 from gym.spaces.box import Box
 from omegaconf import DictConfig
+from habitat.sims.locobot.locobot_client import LocobotClient
 
 import habitat_sim
 from habitat.config.default import get_agent_config
@@ -273,7 +274,7 @@ class LocobotSim(Simulator):
 
     def __init__(self, config: DictConfig) -> None:
         self.habitat_config = config
-
+        self.client = LocobotClient(locobot_url="http://10.0.3.47:8080")
         sim_sensors = []
         for agent_config in self.habitat_config.agents.values():
             for sensor_cfg in agent_config.sim_sensors.values():
@@ -420,8 +421,12 @@ class LocobotSim(Simulator):
 
     def step(self, action: Union[str, np.ndarray, int]) -> Observations:
 
+        action_name = self.sim_config.agents[0].action_space[action].name
+        amount = self.sim_config.agents[0].action_space[action].actuation.amount
+        # turn_left stop move_forward
 
-        print(f"DO ACTION {action}")
+        print(f"DO ACTION {action_name} {amount}")
+        self.client.move(action_name=action_name, amount=amount)
 
         sim_obs = self.get_robot_obs()
         observations = self._sensor_suite.get_observations(sim_obs)
