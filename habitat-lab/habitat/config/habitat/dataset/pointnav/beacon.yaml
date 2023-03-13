@@ -8,4 +8,4 @@ type: PointNav-v1
 split: train
 data_path: data/datasets/pointnav/beacon/v1/{split}/{split}.json.gz
 content_scenes:
-  - 'beacon-6'
+  - 'beacon-7'
