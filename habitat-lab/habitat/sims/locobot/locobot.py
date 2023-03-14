@@ -99,7 +99,7 @@ class HabitatSimSensor:
 
 
 @registry.register_sensor
-class HabitatSimRGBSensor(RGBSensor, HabitatSimSensor):
+class LocobotRGBSensor(RGBSensor, HabitatSimSensor):
     _get_default_spec = habitat_sim.CameraSensorSpec
     sim_sensor_type = habitat_sim.SensorType.COLOR
 
@@ -230,7 +230,7 @@ class HabitatSimSemanticSensor(SemanticSensor, HabitatSimSensor):
 
 # TODO Sensor Hierarchy needs to be redone here. These should not subclass camera sensors
 @registry.register_sensor
-class HabitatSimEquirectangularRGBSensor(HabitatSimRGBSensor):
+class LocobotEquirectangularRGBSensor(LocobotRGBSensor):
     _get_default_spec = habitat_sim.EquirectangularSensorSpec
 
 
@@ -245,7 +245,7 @@ class HabitatSimEquirectangularSemanticSensor(HabitatSimSemanticSensor):
 
 
 @registry.register_sensor
-class HabitatSimFisheyeRGBSensor(HabitatSimRGBSensor):
+class LocobotFisheyeRGBSensor(LocobotRGBSensor):
     _get_default_spec = habitat_sim.FisheyeSensorDoubleSphereSpec
 
 
