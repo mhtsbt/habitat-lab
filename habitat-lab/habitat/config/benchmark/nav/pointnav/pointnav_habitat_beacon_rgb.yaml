@@ -13,8 +13,21 @@ habitat:
       main_agent:
         sim_sensors:
           rgb_sensor:
-            width: 256
+            type: HabitatSimRGBSensor
             height: 256
+            width: 256
+            position:
+              - 0.0
+              - 1.25
+              - 0.0
+            orientation:
+              - 0.0
+              - 0.0
+              - 0.0
+            hfov: 90
+            sensor_subtype: PINHOLE
+            noise_model: None
+            noise_model_kwargs: { }
     habitat_sim_v0:
       gpu_gpu: true
       allow_sliding: false
