@@ -24,7 +24,6 @@ habitat:
               - 0.0
               - 0.0
               - 0.0
-            hfov: 90
             sensor_subtype: PINHOLE
             noise_model: None
             noise_model_kwargs: { }
