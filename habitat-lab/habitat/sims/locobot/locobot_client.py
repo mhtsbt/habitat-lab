@@ -28,6 +28,16 @@ class LocobotClient:
     def move(self, action_name, amount):
         return self._get(url=f"move?action_name={action_name}&amount={amount}")
 
+    def get_rgb(self):
+        success, rgb_resp = self._get(url="rgb")
+        if success:
+            data = self._uncompress_nparr(rgb_resp.content)
+            return data
+
+    def get_odom(self):
+        success, resp = self._get(url="odom")
+        return resp.json()
+
     def get_depth(self):
         success, depth_resp = self._get(url="depth")
         if success:

@@ -280,7 +280,7 @@ class LocobotSim(Simulator):
 
     def __init__(self, config: DictConfig) -> None:
         self.habitat_config = config
-        self.client = LocobotClient(locobot_url="http://10.0.3.49:8080")
+        self.client = LocobotClient(locobot_url="http://10.21.8.82:8080")
         sim_sensors = []
         for agent_config in self.habitat_config.agents.values():
             for sensor_cfg in agent_config.sim_sensors.values():
@@ -420,7 +420,7 @@ class LocobotSim(Simulator):
 
 
     def get_robot_obs(self):
-        return {"depth": self.client.get_depth()}#np.random.random((256, 256)).astype(np.float32)}
+        return {"depth": self.client.get_depth(), "rgb": self.client.get_rgb()}#np.random.random((256, 256)).astype(np.float32)}
 
     def reset(self) -> Observations:
         sim_obs = self.get_robot_obs()
@@ -433,7 +433,7 @@ class LocobotSim(Simulator):
         # turn_left stop move_forward
 
         print(f"DO ACTION {action_name} {amount}")
-        #self.client.move(action_name=action_name, amount=amount)
+        self.client.move(action_name=action_name, amount=amount)
 
         sim_obs = self.get_robot_obs()
         observations = self._sensor_suite.get_observations(sim_obs)
@@ -504,7 +504,7 @@ class LocobotSim(Simulator):
         #if episode is not None:
         #    episode._shortest_path_cache = path
         # TODO?
-        return 10 #path.geodesic_distance
+        return np.linalg.norm(position_a-position_b) #path.geodesic_distance
 
     def action_space_shortest_path(
         self,
@@ -587,6 +587,9 @@ class LocobotSim(Simulator):
             self.__class__.__name__
         )
         state = LocobotState()
+        odom = self.client.get_odom()
+        state.position = np.array(odom['position'])
+        state.rotation = quaternion.from_float_array(odom['orientation']) #np.quaterion(odom['orientation'])
 
         return state
 
@@ -614,7 +617,7 @@ class LocobotSim(Simulator):
             True if the set was successful else moves the agent back to its
             original pose and returns false.
         """
-        # agent = self.get_agent(agent_id)
+        #agent = self.get_agent(agent_id)
         # new_state = self.get_agent(agent_id).get_state()
         # new_state.position = position
         # new_state.rotation = rotation
@@ -681,4 +684,6 @@ class LocobotSim(Simulator):
             will _always_ be false after :meth:`reset` or :meth:`get_observations_at` as neither of those
             result in an action (step) being taken.
         """
-        return self._prev_sim_obs.get("collided", False)
+        # TODO!!
+        print("WARNING COLLISION DETECTION NOT IMPLEMENTED")
+        return False #self._prev_sim_obs.get("collided", False)
