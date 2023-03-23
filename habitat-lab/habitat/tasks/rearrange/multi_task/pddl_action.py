@@ -133,10 +133,7 @@ class PddlAction:
         ensure_entity_lists_match(self._params, param_values)
         self._param_values = param_values
 
-        sub_dict = {
-            from_entity: to_entity
-            for from_entity, to_entity in zip(self._params, self._param_values)
-        }
+        sub_dict = dict(zip(self._params, self._param_values))
 
         # Substitute into the post and pre conditions
         self._param_values = [sub_dict.get(p, p) for p in self._param_values]
@@ -174,13 +171,11 @@ class PddlAction:
     def get_task_kwargs(self, sim_info: PddlSimInfo) -> Dict[str, Any]:
         task_kwargs: Dict[str, Any] = {"orig_applied_args": {}}
         for param, param_value in zip(self._params, self.param_values):
-            task_kwargs[param.name] = sim_info.search_for_entity_any(
-                param_value
-            )
+            task_kwargs[param.name] = sim_info.search_for_entity(param_value)
             task_kwargs["orig_applied_args"][param.name] = param_value.name
         task_kwargs.update(
             **{
-                k: sim_info.search_for_entity_any(v)
+                k: sim_info.search_for_entity(v)
                 for k, v in self._task_info.add_task_args.items()
             }
         )

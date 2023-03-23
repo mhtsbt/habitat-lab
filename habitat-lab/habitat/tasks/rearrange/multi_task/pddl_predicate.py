@@ -62,9 +62,7 @@ class Predicate:
             )
         ensure_entity_lists_match(self._args, arg_values)
         self._arg_values = arg_values
-        self._pddl_sim_state.sub_in(
-            {k: v for k, v in zip(self._args, self._arg_values)}
-        )
+        self._pddl_sim_state.sub_in(dict(zip(self._args, self._arg_values)))
 
     @property
     def n_args(self):
@@ -83,9 +81,15 @@ class Predicate:
         return self
 
     def is_true(self, sim_info: PddlSimInfo) -> bool:
+        """
+        Returns if the predicate is satisfied in the current simulator state.
+        """
         return self._pddl_sim_state.is_true(sim_info)
 
     def set_state(self, sim_info: PddlSimInfo) -> None:
+        """
+        Sets the simulator state to satisfy the predicate.
+        """
         return self._pddl_sim_state.set_state(sim_info)
 
     def clone(self):
