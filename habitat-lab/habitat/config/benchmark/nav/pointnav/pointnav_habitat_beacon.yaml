@@ -15,7 +15,10 @@ habitat:
           depth_sensor:
             width: 256
             height: 256
-            normalize_depth: true
+            normalize_depth: True     
+            position: [0.03, 0.55, 0.0]
+            orientation: [-0.2, 0.0, 0.0]
+            hfov: 80
     habitat_sim_v0:
-      gpu_gpu: true
+      gpu_gpu: false
       allow_sliding: false
